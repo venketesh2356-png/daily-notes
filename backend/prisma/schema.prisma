@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  password String
+  createdAt DateTime @default(now())
+
+  notes Note[]
+  tags Tag[]
+}
+
+model Note {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String    @default("")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  noteDate  DateTime  @default(now())
+  userId    Int
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags      NoteTag[]
+  reminders Reminder[]
+
+  @@index([noteDate])
+  @@index([userId])
+}
+
+model Tag {
+  id     Int       @id @default(autoincrement())
+  name   String
+  color  String    @default("#6366f1")
+  userId Int
+
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes  NoteTag[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model NoteTag {
+  noteId Int
+  tagId  Int
+  note   Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}
+
+model Reminder {
+  id        Int       @id @default(autoincrement())
+  noteId    Int
+  remindAt  DateTime
+  message   String    @default("")
+  fired     Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  note      Note      @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@index([remindAt, fired])
+}

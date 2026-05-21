@@ -1,0 +1,11 @@
+[build]
+command = "npm run build"
+publish = "dist"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[env.production]
+VITE_API_URL = "https://your-railway-backend-url/api"
