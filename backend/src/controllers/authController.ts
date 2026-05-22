@@ -5,13 +5,13 @@ import prisma from "../db.js";
 import { z } from "zod";
 
 const registerSchema = z.object({
-  email: z.string().email(),
+  email: z.string().min(1),
   password: z.string().min(6),
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+  email: z.string().min(1),
+  password: z.string().min(1),
 });
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
