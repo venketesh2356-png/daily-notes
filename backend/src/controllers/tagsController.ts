@@ -3,6 +3,7 @@ import prisma from "../db.js";
 
 export const getTags = async (req: Request, res: Response) => {
   const tags = await prisma.tag.findMany({
+    where: { userId: req.userId },
     include: {
       _count: {
         select: {
@@ -29,6 +30,7 @@ export const createTag = async (req: Request, res: Response) => {
     data: {
       name,
       color,
+      userId: req.userId!,
     },
   });
 

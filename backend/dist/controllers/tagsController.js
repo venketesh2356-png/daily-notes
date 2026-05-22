@@ -1,0 +1,38 @@
+import prisma from "../db.js";
+export const getTags = async (req, res) => {
+    const tags = await prisma.tag.findMany({
+        where: { userId: req.userId },
+        include: {
+            _count: {
+                select: {
+                    notes: true,
+                },
+            },
+        },
+        orderBy: { name: "asc" },
+    });
+    const tagsWithCount = tags.map((tag) => ({
+        ...tag,
+        noteCount: tag._count.notes,
+        _count: undefined,
+    }));
+    res.json(tagsWithCount);
+};
+export const createTag = async (req, res) => {
+    const { name, color = "#6366f1" } = req.body;
+    const tag = await prisma.tag.create({
+        data: {
+            name,
+            color,
+            userId: req.userId,
+        },
+    });
+    res.status(201).json(tag);
+};
+export const deleteTag = async (req, res) => {
+    const { id } = req.params;
+    await prisma.tag.delete({
+        where: { id: parseInt(id) },
+    });
+    res.status(204).send();
+};
