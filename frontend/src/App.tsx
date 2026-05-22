@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Login from './pages/Login';
 
 interface Note {
@@ -46,12 +46,7 @@ export default function App() {
     'Authorization': `Bearer ${authToken}`,
   });
 
-  // Fetch notes on page change
-  useEffect(() => {
-    fetchNotes();
-  }, [page]);
-
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
       setLoading(true);
       let url = `${API_URL}/notes`;
@@ -71,7 +66,14 @@ export default function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, authToken]);
+
+  // Fetch notes on page change
+  useEffect(() => {
+    if (authToken) {
+      fetchNotes();
+    }
+  }, [authToken, fetchNotes]);
 
   const handleCreateNote = async () => {
     if (!newNoteTitle.trim()) {
