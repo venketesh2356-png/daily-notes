@@ -7,9 +7,20 @@ import authRouter from "./routes/auth.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import prisma from "./db.js";
 import cron from "node-cron";
+import { execSync } from "child_process";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+const runMigrations = async () => {
+  try {
+    console.log("Running database migrations...");
+    execSync("npx prisma migrate deploy", { stdio: "inherit" });
+    console.log("Migrations completed successfully!");
+  } catch (error) {
+    console.error("Migration error:", error);
+  }
+};
 
 app.use(
   cors({
@@ -50,14 +61,23 @@ const reminderJob = cron.schedule("* * * * *", async () => {
   }
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  await runMigrations();
 
-process.on("SIGINT", () => {
-  reminderJob.stop();
-  server.close(() => {
-    prisma.$disconnect();
-    process.exit(0);
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
+
+  process.on("SIGINT", () => {
+    reminderJob.stop();
+    server.close(() => {
+      prisma.$disconnect();
+      process.exit(0);
+    });
+  });
+};
+
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
 });
