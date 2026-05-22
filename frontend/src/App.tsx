@@ -13,9 +13,8 @@ interface Note {
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function App() {
-  const [authToken, setAuthToken] = useState<string | null>(
-    localStorage.getItem('authToken')
-  );
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState('today');
   const [showNewNoteForm, setShowNewNoteForm] = useState(false);
   const [newNoteTitle, setNewNoteTitle] = useState('');
@@ -23,6 +22,17 @@ export default function App() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+
+  // Check localStorage on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   if (!authToken) {
     return <Login onLogin={(token) => {
