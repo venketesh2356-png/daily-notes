@@ -46,10 +46,11 @@ export const register = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
+    console.error("Registration error:", error);
     if (error instanceof z.ZodError) {
       return res.status(400).json({ errors: error.errors });
     }
-    res.status(500).json({ error: "Registration failed" });
+    res.status(500).json({ error: error instanceof Error ? error.message : "Registration failed" });
   }
 };
 
@@ -80,10 +81,11 @@ export const login = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
+    console.error("Login error:", error);
     if (error instanceof z.ZodError) {
       return res.status(400).json({ errors: error.errors });
     }
-    res.status(500).json({ error: "Login failed" });
+    res.status(500).json({ error: error instanceof Error ? error.message : "Login failed" });
   }
 };
 
