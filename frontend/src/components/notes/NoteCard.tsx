@@ -1,4 +1,4 @@
-import { Note } from '../../types';
+import type { Note } from '../../types';
 import { useUiStore } from '../../store/uiStore';
 
 interface NoteCardProps {

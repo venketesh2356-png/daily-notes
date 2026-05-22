@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCreateNote, useUpdateNote, useDeleteNote, useNote } from '../../api/notes';
 import { useTags, useCreateTag } from '../../api/tags';
-import { useCreateReminder, useDeleteReminder } from '../../api/reminders';
+import { useCreateReminder } from '../../api/reminders';
 import { useUiStore } from '../../store/uiStore';
 import toast from 'react-hot-toast';
 
@@ -26,7 +26,6 @@ export default function NoteModal({ date, onClose }: NoteModalProps) {
   const deleteNote = useDeleteNote();
   const createTag = useCreateTag();
   const createReminder = useCreateReminder();
-  const deleteReminder = useDeleteReminder();
 
   useEffect(() => {
     if (existingNote) {

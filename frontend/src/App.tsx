@@ -226,7 +226,7 @@ export default function App() {
             {(page === 'today' || page === 'all') && (
               <>
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">{formatDate(new Date())}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{formatDate(new Date().toISOString())}</h2>
                   <button
                     onClick={() => setShowNewNoteForm(!showNewNoteForm)}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 font-medium transition-colors"

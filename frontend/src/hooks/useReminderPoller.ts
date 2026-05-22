@@ -17,9 +17,10 @@ export const useReminderPoller = () => {
 
   useEffect(() => {
     if (reminders && reminders.length > 0) {
-      reminders.forEach((reminder) => {
+      reminders.forEach((reminder: any) => {
+        const noteTitle = reminder.note?.title || 'Note';
         notify(
-          `Reminder for "${reminder.note.title}"`,
+          `Reminder for "${noteTitle}"`,
           reminder.message || 'Time to review your note!'
         );
         acknowledgeReminder.mutate(reminder.id);
