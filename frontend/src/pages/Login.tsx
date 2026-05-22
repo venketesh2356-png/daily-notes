@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
 interface LoginProps {
   onLogin: (token: string) => void;
 }
@@ -17,7 +19,7 @@ export default function Login({ onLogin }: LoginProps) {
     setLoading(true);
 
     try {
-      const url = isSignUp ? '/api/auth/register' : '/api/auth/login';
+      const url = isSignUp ? `${API_URL}/auth/register` : `${API_URL}/auth/login`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
